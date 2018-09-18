@@ -2,10 +2,10 @@
 
 ezNote web app.
 
-Test path: http://ctf.ynuosa.org:8086/eznote/login.html
+Test path: 120.79.79.151:8080/eznote
 
 ## Members
-Master: @LiuBaBa
+Master: @Liuliyong
 
 @hxt-tg, 
 @wangkaijie130, 
