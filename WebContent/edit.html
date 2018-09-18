@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link data-react-helmet="true" rel="icon" type="image/x-icon" href="ico/favicon.ico"/>
+    <title>我的笔记</title>
+
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="css/mdb.min.css" rel="stylesheet">
+    <!-- jquery context menu -->
+    <link href="https://cdn.bootcss.com/jquery-contextmenu/3.0.0-beta.2/jquery.contextMenu.min.css" rel="stylesheet">
+
+    <link href="css/cropper.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/simplemde.min.css">
+    <link rel="stylesheet" href="css/perfect-scrollbar.css">
+    <link rel="stylesheet" href="css/wangEditor.min.css">
+    <link href="css/style.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fixed-sn light-blue-skin">
+
+<!--Double navigation-->
+<header>
+    <!-- Sidebar navigation -->
+    <div id="slide-out" class="side-nav sn-bg-4 fixed" style="height: 100%">
+        <ul id="scrollableNav" style="height: 100%">
+            <!-- Logo -->
+            <li>
+                <div class="logo-wrapper waves-light">
+                    <svg style="float: left; margin: 16px 0 0 32px" xmlns="http://www.w3.org/2000/svg"  version="1.1" x="0px" y="0px" height="48px" viewBox="0 0 401 412" xml:space="preserve">
+                        <path fill="#FBC80E" d="M342.105,363.623c-38.579-0.82-68.575-20.373-142.648-85.074c-95.507-83.423-62.359-85.201-149.433-48.824    c-65.122,27.205-54.95,56.86,38.537,130.748c67.963,53.715,99.247,59.901,163.271,36.794    C293.74,382.141,331.713,369.623,342.105,363.623z"></path>
+                        <path fill="#23A9E1" d="M271.512,13.545c18.578,33.82,16.644,69.574-2.354,166.074c-24.492,124.422-42.606,96.605,32.434,153.824    c56.121,42.795,76.718,19.158,93.963-98.748c12.537-85.715,2.252-115.9-49.771-159.794    C311.73,46.172,281.904,19.545,271.512,13.545z"></path>
+                        <text transform="matrix(1 -1.113117e-005 1.113117e-005 1 165.3447 254.3408)" fill="#00DDFF" font-family="'Georgia-Italic'" font-size="179.173">e</text>
+                        <path fill="#EB6B6D" d="M3,248c20-33,51.931-49.201,145-81c120-41,104.966-11.404,117-105c9-70-21.768-76.018-132.5-32    C52,62,31,86,19,153C11.146,196.855,3,236,3,248z"></path>
+                    </svg>
+                    <div class="white-text" style="float: left; font-size: 200%; font-family: 微软雅黑, monospace !important; margin: 15px 0 0 15px; ">
+                        易笔记
+                    </div>
+                </div>
+            </li>
+            <!--/Social-->
+            <!--Search Form-->
+            <li style="display: none">
+                <form class="search-form" role="search">
+                    <div class="form-group md-form mt-0 pt-1 waves-light">
+                        <div style="float:left">
+                            <input type="text" class="form-control"  placeholder="搜索笔记">
+                        </div>
+                        <span style="float: right; margin: 5px 15px 0 0"><i class="fa fa-search"></i></span>
+                    </div>
+                </form>
+            </li>
+            <li style="margin-bottom: 20px">
+                <div class="btn-group" role="group">
+                    <div class="btn-group" role="group">
+                        <a type="button" class="waves-effect" style="padding: 0 .5rem" onclick="$('#modalNewNotebook').modal('show');"
+                           id="btn_new_notebook_for_css"><i class="fa fa-book" style="margin-right: 2px;"></i> 新建笔记本</a>
+                        <a id="btn_new_note_for_css" type="button" class="dropdown-toggle waves-effect" style="padding: 0 .5rem"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-plus" style="margin-right: 2px;"></i> 新建笔记
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="new_note" id="new_note_menu_for_css">
+                            <a class="dropdown-item waves-effect item-over" href="#" onclick="$('#modalNewHtml').modal('show');"><i class="fa fa-file-text-o"></i> 新建文本笔记</a>
+                            <a class="dropdown-item waves-effect item-over" href="#" onclick="$('#modalNewMarkdown').modal('show');"><i class="fa fa-file-word-o"></i> 新建Markdown</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item waves-effect item-over" href="#" onclick="$('#modalUploadFile').modal('show');"><i class="fa fa-upload"></i> 上传文件</a>
+                            <a class="dropdown-item waves-effect item-over" href="#" onclick="$('#modalNewSharedFile').modal('show');"><i class="fa fa-code-fork"></i> 添加分享</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li id="sideNavNotebooksLoader">
+
+            </li>
+        </ul>
+        <div class="sidenav-bg modal-footer"></div>
+    </div>
+    <!--/. Sidebar navigation -->
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav" id="navUp">
+        <!-- SideNav slide-out button -->
+        <div class="float-left">
+            <a href="#" data-activates="slide-out" class="button-collapse"><i class="fa fa-bars"></i></a>
+        </div>
+        <!-- Breadcrumb-->
+        <div class="breadcrumb-dn mr-auto">
+            <p class="yh_font" style="font-size: 1.5rem">笔记本</p>
+        </div>
+        <ul class="nav navbar-nav nav-flex-icons ml-auto">
+            <li class="nav-item" ><a class="nav-link" onclick="$('#modalSupport').modal('show');"><i class="fa fa-support"></i>相关技术</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdown_account" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-user"></i>我的账户
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown_account">
+                    <div class="card testimonial-card">
+                        <div class="card-up indigo lighten-1">
+                        </div>
+                        <!--<a class="avatar mx-auto white rounded-circle avatar-border" data-toggle="modal" data-target="#modalEditAvatar"><img src="img/test.png">-->
+                        <a class="avatar mx-auto white rounded-circle avatar-border"><img src="img/test.png">
+                        </a>
+                        <div class="card-body">
+                            <h4 class="card-title yh_font" style="width: 200px" id="account_name">管理员</h4>
+                            <hr>
+                            <a class="dropdown-item" data-toggle="modal" data-target="#modalEditInfo">修改个人信息</a>
+                            <a class="dropdown-item" onclick="logout()">退出登录</a>
+                        </div>
+                    </div>
+                </div>
+
+            </li>
+        </ul>
+    </nav>
+    <!-- /.Navbar -->
+</header>
+<!--/.Double navigation-->
+
+<!--Main Layout-->
+<main>
+    <!--modalLoaders-->
+    <div id="modalNotesLoader"></div>
+    <div id="modalEditInfoLoader"></div>
+    <div id="modalEditAvatarLoader"></div>
+    <div id="modalInputBoxLoader"></div>
+    <div id="modalSupportLoader"></div>
+    <div id="modalNewNotebookLoader"></div>
+    <div id="modalNewMarkdownLoader"></div>
+    <div id="modalNewHtmlLoader"></div>
+    <div id="modalUploadFileLoader"></div>
+    <div id="modalNewSharedFileLoader"></div>
+    <div id="modalConfirmDeleteNoteLoader"></div>
+    <div id="modalConfirmDeleteNotebookLoader"></div>
+    <div id="modalEditNotebookLoader"></div>
+
+
+
+
+
+    <div class="container-fluid mt-5">
+
+
+        <div id="panelHtmlEditorLoader" style="z-index:0;position: relative;"></div>
+        <div id="panelMarkdownLoader" style="z-index:0;position: relative;"></div>
+        <div id="panelDownloadLoader" style="z-index:0;position: relative;"></div>
+        <div id="panelShowHtmlLoader" style="z-index:0;position: relative;"></div>
+        <div id="panelHelpLoader" style="z-index:0;position: relative;"></div>
+
+
+
+
+    </div>
+
+
+</main>
+<!--Main Layout-->
+
+<!-- SCRIPTS -->
+<!-- JQuery -->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<!-- Tooltips -->
+<script src="./js/common/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="js/common/mdb.min.js"></script>
+<!-- jquery-context-menu -->
+<script src="js/common/jquery.contextMenu.min.js"></script>
+<script src="js/common/jquery.ui.position.js"></script>
+<!-- Cropper image -->
+<script src="js/common/cropper.min.js"></script>
+<script src="js/avatar.js"></script>
+<script src="js/common/wangEditor.min.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+<script src="js/common/simplemde.min.js"></script>
+<script src="js/common/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="js/cookie.js"></script>
+<script src="js/editor_ui.js"></script>
+<script type="text/javascript" src="js/notebook.js"></script>
+<script type="text/javascript" src="js/note.js"></script>
+
+<script>
+    // SideNav Initialization
+    $(".button-collapse").sideNav();
+    $("#sideNavNotebooksLoader").load("include/sideNavNotebooks.html");
+    // Modals
+    $("#modalNotesLoader").load("include/modalNotes.html");
+    $("#modalEditInfoLoader").load("include/modalEditInfo.html");
+    $("#modalEditAvatarLoader").load("include/modalEditAvatar.html");
+    $("#modalSupportLoader").load("include/modalSupport.html");
+    $("#modalInputBoxLoader").load("include/modalInputBox.html");
+    $("#modalNewNotebookLoader").load("include/modalNewNotebook.html");
+    $("#modalNewMarkdownLoader").load("include/modalNewMarkdown.html");
+    $("#modalNewHtmlLoader").load("include/modalNewHtml.html");
+    $("#modalUploadFileLoader").load("include/modalUploadFile.html");
+    $("#modalNewSharedFileLoader").load("include/modalNewSharedFile.html");
+    $("#modalConfirmDeleteNoteLoader").load("include/modalConfirmDeleteNote.html");
+    $("#modalConfirmDeleteNotebookLoader").load("include/modalConfirmDeleteNotebook.html");
+    $("#modalEditNotebookLoader").load("include/modalEditNotebook.html");
+    // Panels
+    $("#panelHtmlEditorLoader").load("include/panelHtmlEditor.html");
+    $("#panelMarkdownLoader").load("include/panelMarkdown.html");
+    $("#panelShowHtmlLoader").load("include/panelShowHtml.html");
+    $("#panelDownloadLoader").load("include/panelDownload.html");
+    $("#panelHelpLoader").load("include/panelHelp.html");
+
+    // Initialize scrollbars
+    new PerfectScrollbar(document.getElementById('scrollableNav'));
+
+    // Initialize toastr options
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": false    ,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": 300,
+        "hideDuration": 500,
+        "timeOut": 1500,
+        "extendedTimeOut": 500,
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+    let mdEditor = null;
+    // Initial for wangEditor and MDEditor
+    window.onload = function() {
+        let E = window.wangEditor;
+        let editor = new E('#myEditor');
+        editor.customConfig.initialFrameWidth = '100%';
+        editor.create();
+        $('#myEditor').data('editor', editor);
+        mdEditor = new SimpleMDE({
+            element: document.getElementById("mdEditor")});
+
+        mdEditor.codemirror.on('refresh', function() {
+            if (mdEditor.isFullscreenActive()) {
+                document.getElementById("slide-out").style.display = "none";
+                document.getElementById("navUp").style.display = "none";
+            } else {
+                document.getElementById("slide-out").style.display = "block";
+                document.getElementById("navUp").style.display = "flex";
+            }
+        });
+    };
+
+    // Material Select Initialization
+    $(document).ready(function() {
+        $('.mdb-select').material_select();
+        let i=getCookie('userNick');
+        $('#account_name').text(i==null?'未登录':i);
+    });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<div class="modal fade" id="modalEditNotebook" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">重命名笔记本</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-1">
+                <h5 class="mt-1 mb-2 yh_font">输入新笔记本名称：</h5>
+                <div class="md-form form-sm">
+                    <input type="text" id="inputModalEditNotebook" class="form-control form-control-sm">
+                    <label for="inputModalEditNotebook">笔记本名称...</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary  waves-light btn-rounded z-depth-1a waves-effect waves-light" onclick="updateNoteBook($('#inputModalEditNotebook').val())">重命名</a>
+            </div>
+        </div>
+    </div>
+</div>

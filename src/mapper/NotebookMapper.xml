@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="dao.NotebookDao">
+	<resultMap type="map" id="notebookMaptoMap">
+        <id column="cn_notebook_id" property="id"/>
+        <result column="cn_user_id" property="userId"/>
+        <result column="cn_notebook_type_id" property="typeId"/>
+        <result column="cn_notebook_name" property="name"/>
+        <result column="cn_notebook_desc" property="descr"/>
+        <result column="cn_notebook_createtime" property="createTime"/>
+        <collection 
+	        ofType="entity.Notebook" 
+	        property="childNoteBook" 
+	        column="cn_notebook_id" 
+	        select="findChildNoteBookstoMap"/>
+    </resultMap>
+    
+    <resultMap type="entity.Notebook" id="notebookMaptoNotebook">
+        <id column="cn_notebook_id" property="id"/>
+        <result column="cn_user_id" property="userId"/>
+        <result column="cn_notebook_type_id" property="typeId"/>
+        <result column="cn_notebook_name" property="name"/>
+        <result column="cn_notebook_desc" property="descr"/>
+        <result column="cn_notebook_createtime" property="createTime"/>
+        <collection 
+	        ofType="entity.Notebook" 
+	        property="childNoteBook" 
+	        column="cn_notebook_id" 
+	        select="findChildNoteBookstoNotebook"/>
+    </resultMap>
+
+    <select id="findNotebooksByUserId" parameterType="string" resultMap="notebookMaptoMap">
+        select
+        cn_notebook_id,
+        cn_user_id,
+        cn_notebook_name,
+        cn_notebook_type_id,
+        cn_notebook_desc,
+        cn_notebook_createtime
+        from cn_notebook
+        where cn_user_id =#{userId}
+        and cn_notebook_parent_id = '' or cn_notebook_parent_id is NULL
+        order by cn_notebook_createtime desc
+    </select>
+    
+    <select id="findAllNotebooksByUserId" parameterType="string" resultMap="notebookMaptoMap">
+        select
+        cn_notebook_id,
+        cn_user_id,
+        cn_notebook_name,
+        cn_notebook_type_id,
+        cn_notebook_desc,
+        cn_notebook_createtime
+        from cn_notebook
+        where cn_user_id =#{userId}
+        order by cn_notebook_createtime desc
+    </select>
+    
+    <select id="findChildNoteBookstoNotebook" parameterType="string" resultMap="notebookMaptoNotebook">
+    	select
+    	*
+        from cn_notebook
+        where cn_notebook_parent_id = #{id}
+    </select>
+    
+    <select id="findChildNoteBookstoMap" parameterType="string" resultMap="notebookMaptoMap">
+    	select
+    	*
+        from cn_notebook
+        where cn_notebook_parent_id = #{id}
+    </select>
+
+    <select id="findNotebookByNotebookId" parameterType="string" resultMap="notebookMaptoNotebook">
+        select
+        *
+        from cn_notebook
+        where cn_notebook_id =#{notebookId}
+    </select>
+
+    <select id="findNotebookByName" parameterType="string" resultMap="notebookMaptoNotebook">
+        select
+        cn_notebook_id as id,
+        cn_user_id as userId,
+        cn_notebook_type_id as typeId,
+        cn_notebook_name as name,
+        cn_notebook_desc as descr,
+        cn_notebook_createtime as createTime
+        from cn_notebook
+        where cn_notebook_name =#{notebookName}
+    </select>
+
+    <update id="updateNotebook" parameterType="entity.Notebook">
+        update cn_notebook
+        <trim prefix="set" suffixOverrides=",">
+        <if test="notebook.userId!=null">
+            cn_user_id=#{notebook.userId},
+        </if>
+        <if test="notebook.typeId!=null">
+            cn_notebook_type_id=#{notebook.typeId},
+        </if>
+        <if test="notebook.name!=null">
+            cn_notebook_name=#{notebook.name},
+        </if>
+        <if test="notebook.descr!=null">
+            cn_notebook_desc=#{notebook.descr},
+        </if>
+         <if test="notebook.parentId!=null">
+            cn_notebook_parent_id=#{notebook.parentId}
+        </if>
+        </trim>
+        where
+            cn_notebook_id=#{notebook.id}
+    </update>
+
+
+    <insert id="addNotebook" parameterType="entity.Notebook">
+        insert into
+            cn_notebook
+       values(
+            #{notebook.id},
+            #{notebook.userId},
+            #{notebook.typeId},
+            #{notebook.name},
+            #{notebook.descr},
+            #{notebook.createTime},
+            #{notebook.parentId}
+       )
+    </insert>
+    
+    <delete id="deleteNotebook" parameterType="string">
+        delete from
+            cn_notebook
+        where
+            cn_notebook_id=#{notebookId};
+    </delete>
+</mapper>
