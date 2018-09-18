@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link data-react-helmet="true" rel="icon" type="image/x-icon" href="ico/favicon.ico"/>
+    <title>ezNote - 易笔记</title>
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="css/mdb.min.css" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+
+<div id="modalLoginRegisterLoader"></div>
+<div id="modalLoginSuccessLoader"></div>
+<div id="modalRegisterSuccessLoader"></div>
+
+
+<!-- Start your project here-->
+<div style="height: 100vh">
+    <div class="flex-center flex-column">
+        <!-- 主面板 -->
+        <div class="card card-cascade wider">
+            <!-- Card image -->
+            <div class="view view-cascade overlay">
+                <img class="card-img-top" src="img/login_bgp.jpg">
+                <a href="#">
+                    <div class="mask rgba-white-slight"></div>
+                </a>
+            </div>
+
+            <!-- Card content -->
+            <div class="card-body card-body-cascade">
+                <div style="margin: 15px 25px 5px 25px">
+                    <!-- Title -->
+                    <h4 class="card-title yh_font" >ezNote - 易笔记</h4>
+                    <!-- Text -->
+                    <p class="card-text">云端存储，多版本记录。支持HTML及Markdown等多种富文本编辑。轻松上传文件，多级目录管理。（TODO：介绍重写）</p>
+                    <!-- Button -->
+                    <button type="button" class="btn btn-primary btn-rounded waves-effect waves-light modalBtnCenter purple-gradient" data-toggle="modal" data-target="#modalLogin">进入应用</button>
+                </div>
+            </div>
+        </div>
+        <!-- 主面板 -->
+
+    </div>
+</div>
+<!-- /Start your project here-->
+
+
+
+
+
+<!-- SCRIPTS -->
+<!-- SCRIPTS -->
+<!-- JQuery -->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<!-- Tooltips -->
+<script src="./js/common/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="js/common/mdb.min.js"></script>
+
+<script type="text/javascript" src="js/login.js"></script>
+<script type="text/javascript" src="js/cookie.js"></script>
+
+<script>
+    $("#modalLoginRegisterLoader").load("include/modalLoginRegister.html");
+    $("#modalLoginSuccessLoader").load("include/modalLoginSuccess.html");
+    $("#modalRegisterSuccessLoader").load("include/modalLoginSuccess.html");
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="dao.NoteDao">
+    <!-- 拿到所有的笔记 -->
+    <select id="findAllNotes" resultType="map">
+        select
+            cn_note_id as id,
+            cn_notebook_id as notebookId,
+            cn_user_id as userId,
+            cn_note_status_id as statusId,
+            cn_note_type_id as typeId,
+            cn_note_title as title,
+            cn_note_create_time as createTime,
+            cn_note_last_modify_time as lastModifyTime
+        from
+            cn_note
+        where 1=1
+    </select>
+
+    <!-- 这个查询是查询完整的笔记信息 -->
+    <select id="findCompleteNotesByNoteBookId" parameterType="string" resultType="map">
+        select
+            cn_note_id as id,
+            cn_notebook_id as notebookId,
+            cn_user_id as userId,
+            cn_note_status_id as statusId,
+            cn_note_type_id as typeId,
+            cn_note_title as title,
+            cn_note_create_time as createTime,
+            cn_note_last_modify_time as lastModifyTime
+        from
+            cn_note
+        where
+            cn_notebook_id =#{notebookId}
+        order by
+            cn_note_create_time descr
+    </select>
+
+	<!-- 这个回退选项 -->
+    <select id="backNotesByNoteBookId" parameterType="string" resultType="map">
+        select
+            cn_note_id as id,
+            cn_notebook_id as notebookId,
+            cn_user_id as userId,
+            cn_note_status_id as statusId,
+            cn_note_type_id as typeId,
+            cn_note_title as title,
+            cn_note_create_time as createTime,
+            cn_note_last_modify_time as lastModifyTime
+        from
+            cn_note
+        where
+            cn_notebook_id =#{notebookId}
+        order by
+            cn_note_create_time descr
+    </select>
+
+    <!-- 这个查询是仅仅只查询id和title，用于显示列表，可以节省网络流量-->
+    <select id="findNotesByNoteBookId" parameterType="string" resultType="map">
+        select
+           cn_note_id as id,
+            cn_notebook_id as notebookId,
+            cn_user_id as userId,
+            cn_note_status_id as statusId,
+            cn_note_type_id as typeId,
+            cn_note_title as title,
+            cn_note_create_time as createTime,
+            cn_note_last_modify_time as modifyTime
+        from
+            cn_note
+        where
+            cn_notebook_id=#{notebookId}
+        order by
+            cn_note_last_modify_time desc
+    </select>
+
+    <!-- 插入新的笔记到数据库中 -->
+    <insert id="addNote" parameterType="entity.Note">
+       insert into
+            cn_note
+       values(
+           #{note.id},
+           #{note.notebookId},
+           #{note.userId},
+           #{note.statusId},
+           #{note.typeId},
+           #{note.title},
+           #{note.createTime},
+           #{note.modifyTime},
+           #{note.back_id})
+    </insert>
+
+    <!-- 更新笔记信息，使用动态sql-->
+    <update id="updateNote" parameterType="entity.Note">
+        update
+        cn_note
+        set
+        <if test="note.notebookId!=null">
+            cn_notebook_id=#{note.notebookId},
+        </if>
+
+        <if test="note.userId!=null">
+            cn_user_id=#{note.userId},
+        </if>
+
+        <if test="note.statusId!=null">
+            cn_note_status_id=#{note.statusId},
+        </if>
+
+        <if test="note.typeId!=null">
+            cn_note_type_id=#{note.typeId},
+        </if>
+
+        <if test="note.title!=null">
+            cn_note_title=#{note.title},
+        </if>
+
+        cn_note_last_modify_time= #{note.modifyTime}
+        where
+        cn_note_id=#{note.id}
+    </update>
+
+    <select id="findNoteByNoteId" parameterType="string" resultType="map">
+        select
+            cn_note_id as id,
+            cn_notebook_id as notebookId,
+            cn_user_id as userId,
+            cn_note_status_id as statusId,
+            cn_note_type_id as typeId,
+            cn_note_title as title,
+            cn_note_create_time as createTime,
+            cn_note_last_modify_time as modifyTime,
+            cn_note_backup as back
+        from
+            cn_note
+        where
+            cn_note_id =#{noteId}
+    </select>
+
+    <select id="findNoteByTitleAndNotebookId" resultType="entity.Note">
+        select
+            cn_note_id as id,
+            cn_notebook_id as notebookId,
+            cn_user_id as userId,
+            cn_note_status_id as statusId,
+            cn_note_type_id as typeId,
+            cn_note_title as title,
+            cn_note_create_time as createTime,
+            cn_note_last_modify_time as modifyTime
+        from
+            cn_note
+        where
+            cn_note_title =#{0} and cn_notebook_id=#{1} and cn_note_status_id not in ('delete')
+    </select>
+
+    <delete id="deleteNote" parameterType="string">
+        delete from
+            cn_note
+        where
+            cn_note_id = #{noteId}
+    </delete>
+
+    <update id="backNote" parameterType="string">
+        update
+        	cn_note
+        set
+        	cn_note_backup=cn_note_backup-1
+        where
+        	cn_note_id=#{noteId}
+    </update>
+
+    <update id="backupNote" parameterType="string">
+    	update
+        cn_note
+        set cn_note_backup=cn_note_backup+1
+        where cn_note_id=#{noteId}
+    </update>
+
+    <insert id="uploadFile" parameterType="entity.Note">
+    	insert into
+    		cn_note
+    	values(
+    	   #{note.id},
+           #{note.notebookId},
+           #{note.userId},
+           #{note.statusId},
+           #{note.typeId},
+           #{note.title},
+           #{note.createTime},
+           #{note.modifyTime},
+           #{note.back_id})
+    </insert>
+
+</mapper>
