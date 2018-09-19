@@ -28,6 +28,12 @@
 </head>
 
 <body class="fixed-sn light-blue-skin">
+<div id="mdb-preloader" class="flex-center" style="background: rgba(0, 0, 0, .8);">
+    <div id="preloader-markup">
+    </div>
+</div>
+
+
 
 <!--Double navigation-->
 <header>
@@ -168,7 +174,7 @@
 <!-- JQuery -->
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <!-- Tooltips -->
-<script src="./js/common/popper.min.js"></script>
+<script src="js/common/popper.min.js"></script>
 <!-- Bootstrap core JavaScript -->
 <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <!-- MDB core JavaScript -->
@@ -189,6 +195,7 @@
 <script type="text/javascript" src="js/note.js"></script>
 
 <script>
+    new WOW().init();
     // SideNav Initialization
     $(".button-collapse").sideNav();
     $("#sideNavNotebooksLoader").load("include/sideNavNotebooks.html");
@@ -221,7 +228,7 @@
         "closeButton": true,
         "debug": false,
         "newestOnTop": true,
-        "progressBar": false    ,
+        "progressBar": false,
         "positionClass": "toast-top-right",
         "preventDuplicates": true,
         "onclick": null,

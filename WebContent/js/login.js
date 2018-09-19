@@ -1,46 +1,56 @@
 /**
- * 页面初始化后，绑定函数。
+* 使用到的全局变量
  */
-$(function () {
-    // 登录
-    $('#log_email').bind('input', checkLoginEmail);
-    $('#log_pass').bind('input', checkLoginPasswordEmpty);
-    $("#log_btn").bind('click' ,submitInputForm);
-    // 注册
-    $('#reg_email').bind('input', checkRegEmail);
-    $('#reg_nick').bind('input', checkRegNickname);
-    $("#reg_pass").bind('input' ,checkRegPassword);
-    $('#reg_pass_con').bind('input', checkRegPasswordConfirm);
-    $("#reg_btn").bind('click' ,submitRegForm);
-    //登出
-    $("#logout").bind('click' ,logout);
-    //修改密码
-    $("#changePassword").bind('click' ,changepwd);
-});
+let timeout = null; // 判断停止输入的计时器
+const TIMEOUT = 500; // 半秒内无时间刷新，视为输入停止
 
-// UI更新
-function invalid(input, info){
-    document.getElementById(input).classList.remove("valid");
-    document.getElementById(input).classList.add("invalid");
-    document.getElementById(input+'_err').innerText = info;
-    document.getElementById(input+'_err').style.display = 'block';
+
+/**
+ * 工具函数
+ */
+// 绑定停止输入时执行函数（装饰器）
+function checkOnKeyUp(func){
+    return function (){
+        clearTimeout(timeout);
+        timeout = setTimeout(func, TIMEOUT);
+    }
+}
+// 绑定常规按钮事件，弹起及失去焦点
+function bindKeyUpAndBlur(elemId, func){
+    let elem = $('#'+elemId);
+    elem.bind('keyup', checkOnKeyUp(func));
+    elem.bind('blur', func);
+}
+// UI错误提示，有相关err元素则修改，否则弹出提示信息
+function invalid(inputElemId, info){
+    let input = document.getElementById(inputElemId);
+    let err = document.getElementById(inputElemId+'_err');
+    if (input){
+        input.classList.remove("valid");
+        input.classList.add("invalid");
+    }
+    if (err){
+        err.innerText = info;
+        err.style.display = 'block';
+    } else toastr.error(info);
     return false;
 }
-function valid(input){
-    document.getElementById(input).classList.remove("invalid");
-    document.getElementById(input).classList.add("valid");
-    document.getElementById(input+'_err').style.display = 'none';
+// UI正确提示，同上
+function valid(inputElemId, info){
+    let input = document.getElementById(inputElemId);
+    let err = document.getElementById(inputElemId+'_err');
+    if (input) {
+        input.classList.remove("invalid");
+        input.classList.add("valid");
+    }
+    if (err) err.style.display = 'none';
+    if (info) toastr.success(info);
     return true;
 }
-
-// 正则验证
+// 正则验证（邮箱、昵称及密码）
 function isValidEmail(email) {
     let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
-}
-function isValidAccount(account){
-    let re = /^(?=[a-z_\d]*[a-z])[a-z_\d]{4,15}$/;  // 以字母开头，由字母数字下划线组成的4-15个字符
-    return re.test(account);
 }
 function isValidNickname(nickname){
     let re = /^[\u4e00-\u9fa5]{2,10}|[\w ]{4,20}$/;  // 2-10个连续中文和字母数字或4-20个英文字母下划线或空格
@@ -50,6 +60,11 @@ function isValidPassword(password){
     let re = /^\S{6,20}$/;  // 6-20个非空字符
     return re.test(password);
 }
+// TODO: 暂时删除账户名
+// function isValidAccount(account){
+//     let re = /^(?=[a-z_\d]*[a-z])[a-z_\d]{4,15}$/;  // 以字母开头，由字母数字下划线组成的4-15个字符
+//     return re.test(account);
+// }
 
 // 请求判断邮箱是否存在
 function isEmailRegistered(email){
@@ -74,18 +89,63 @@ function isEmailRegistered(email){
     return isExisted;
 }
 
+
+/**
+ * 页面初始化后，为输入框绑定函数
+ */
+$(function () {
+    // 登录和注册时的按键触发检查函数
+    bindKeyUpAndBlur('log_email', checkLoginEmail);
+    bindKeyUpAndBlur('log_pass', checkLoginPasswordEmpty);
+    bindKeyUpAndBlur('reg_email', checkRegEmail);
+    bindKeyUpAndBlur('reg_nick', checkRegNickname);
+    bindKeyUpAndBlur('reg_pass', checkRegPassword);
+    bindKeyUpAndBlur('reg_pass_con', checkRegPasswordConfirm);
+});
+
+
 /**
  * 登录功能验证
  */
 // 检验登录邮箱是否符合要求
 function checkLoginEmail() {
     let email = document.getElementById("log_email").value;
-    if (email.length === 0) return invalid("reg_email", "邮箱不能为空");
-    if (!isValidEmail(email))
-        return invalid("log_email", "邮箱格式不规范");
-    if (!isEmailRegistered(email))
-        return invalid("log_email", "该邮箱未注册");
+    if (email.length === 0) return invalid("log_email", "邮箱不能为空");
+    if (!isValidEmail(email)) return invalid("log_email", "邮箱格式不规范");
+    if (!isEmailRegistered(email)) return invalid("log_email", "该邮箱未注册");
     return valid("log_email");
+}
+
+//检查cookie中是否有token，以及token是否过期
+function checkIsAutoLogin() {
+	let token = getCookie('token');
+	if (token === null) {
+		return;
+	}
+	let data = {
+		'token' : token
+	};
+	$.post({
+		url : 'user/checkAutoLogin.do',
+		data : data,
+		type : 'post',
+		dataType : 'json',
+		success : function(result) {
+			if (result.state === 0) {
+				// 登录成功
+				let user = result.data;
+				// 保存登录的userId到cookie
+				addCookie("userId", user.id);
+				addCookie("userEmail", user.email);
+				addCookie("userNick", user.nick);
+				addCookie("token", user.token)
+				// 显示登录成功界面
+				$('#modalLogin').modal('hide');
+				$('#modalLoginSuccess').modal('show');
+				location.href = 'edit.html';
+			}
+		}
+	});
 }
 
 // 检验登录密码是否为空
@@ -97,13 +157,16 @@ function checkLoginPasswordEmpty() {
 
 // 提交登录表单
 function submitInputForm() {
-    if (!checkLoginEmail())
+    if (!checkLoginEmail() || !checkLoginPasswordEmpty())
         return false;
-    let email = document.getElementById("log_email").value;
-    let pass = document.getElementById("log_pass").value;
+    let email = $("#log_email").val(), pass = $("#log_pass").val();
+    let expire = document.getElementById("log_expired_time").value === null ? 0
+        : document.getElementById("log_expired_time").value;
+    let expireTime = expire;
     let data = {
         "email": email,
-        "password": pass
+        "password": pass,
+        "expireTime" : expireTime
     };
     $.ajax({
         url: 'user/login.do',
@@ -111,7 +174,6 @@ function submitInputForm() {
         type: 'post',
         dataType: 'json',
         success: function (result) {
-            console.log(result);
             if (result.state === 0) {
                 //登录成功
                 let user = result.data;
@@ -119,6 +181,7 @@ function submitInputForm() {
                 addCookie("userId", user.id);
                 addCookie("userEmail", user.email);
                 addCookie("userNick",user.nick);
+                addCookie("token", user.token)
                 // 显示登录成功界面
                 $('#modalLogin').modal('hide');
                 $('#modalLoginSuccess').modal('show');
@@ -151,10 +214,8 @@ function submitInputForm() {
 function checkRegEmail() {
     let email = document.getElementById("reg_email").value;
     if (email.length === 0) return invalid("reg_email", "邮箱不能为空");
-    if (!isValidEmail(email))
-        return invalid("reg_email", "邮箱格式不规范");
-    if (isEmailRegistered(email))
-        return invalid("reg_email", "该用户名已存在");
+    if (!isValidEmail(email)) return invalid("reg_email", "邮箱格式不规范");
+    if (isEmailRegistered(email)) return invalid("reg_email", "该用户名已存在");
     return valid("reg_email");
 }
 
@@ -239,7 +300,7 @@ function logout() {
 /**
  * 修改密码（改版后变成修改信息了）
  */
-function changepwd(nick_name,original_password,new_password,final_password,email) {
+function changeUserInfo(nick_name, original_password, new_password, final_password, email) {
     //检查新密码的格式和两次密码是否一致
 
 	if (nick_name === '')

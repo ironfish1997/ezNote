@@ -1,0 +1,85 @@
+image: maven:latest
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  DEPLOY_PATH: "/var/lib/tomcat8/webapps"
+  APP_NAME: "eznote"
+
+
+cache:
+  paths:
+    - .m2/repository/
+
+
+build:
+  stage: build
+  before_script:
+    - wget http://file.hxtcloud.cn/maven_aliyun.xml
+    - mv maven_aliyun.xml /usr/share/maven/conf/settings.xml
+  script:
+    - mvn $MAVEN_CLI_OPTS install
+#  artifacts:
+#    paths:
+#    - WebContent/
+  only:
+    - master
+    - dev
+
+
+#test:
+#  stage: test
+#  script:
+#    - mvn $MAVEN_CLI_OPTS test
+#  only:
+#    - master
+#    - dev
+
+
+deploy:
+  stage: deploy
+  script:
+    - wget http://security.debian.org/debian-security/pool/updates/main/o/openssh/openssh-sftp-server_7.4p1-10+deb9u4_amd64.deb
+    - dpkg -i openssh-sftp-server_7.4p1-10+deb9u4_amd64.deb
+    - wget http://security.debian.org/debian-security/pool/updates/main/o/openssh/openssh-server_7.4p1-10+deb9u4_amd64.deb
+    - dpkg -i openssh-server_7.4p1-10+deb9u4_amd64.deb
+    - wget http://mirrors.ustc.edu.cn/debian/pool/main/s/sshpass/sshpass_1.06-1_amd64.deb
+    - dpkg -i sshpass_1.06-1_amd64.deb
+    - wget http://security.debian.org/debian-security/pool/updates/main/o/openssh/ssh_7.4p1-10+deb9u4_all.deb
+    - dpkg -i ssh_7.4p1-10+deb9u4_all.deb
+    - mkdir ~/.ssh || echo 
+    - echo "|1|cpx7hiRM5+x4hy/7KP5lH0hZuBk=|5cWVOHEGlnVP5eRO90nRaEWD/ag= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFRPdkous+87vV03kfG/2dEbM/3vPr5bkUAX991z9dkYFy1i0kKB3B76OCf7BkcqmqapFNawDL5sPyZVui42GXM=" > ~/.ssh/known_hosts
+    - mkdir _tmp; cp /builds/eznote_dev/eznote/.m2/repository/top/liuliyong/eznote/0.0.1-SNAPSHOT/eznote-0.0.1-SNAPSHOT.war _tmp/$APP_NAME.war; cd _tmp
+    - mkdir $APP_NAME; mv $APP_NAME.war $APP_NAME; cd $APP_NAME
+    - jar -xvf $APP_NAME.war
+    - cp -r ../../src/conf ../../src/mapper WEB-INF/classes
+    - jar -cvf ../$APP_NAME.war .
+    - sshpass -p $SCP_PASS scp -r ../$APP_NAME.war $SCP_USER@$SCP_IP:$DEPLOY_PATH
+    
+  only:
+    - master
+
+
+
+deploy_test:
+  stage: deploy
+  script:
+    - wget http://security.debian.org/debian-security/pool/updates/main/o/openssh/openssh-sftp-server_7.4p1-10+deb9u4_amd64.deb
+    - dpkg -i openssh-sftp-server_7.4p1-10+deb9u4_amd64.deb
+    - wget http://security.debian.org/debian-security/pool/updates/main/o/openssh/openssh-server_7.4p1-10+deb9u4_amd64.deb
+    - dpkg -i openssh-server_7.4p1-10+deb9u4_amd64.deb
+    - wget http://mirrors.ustc.edu.cn/debian/pool/main/s/sshpass/sshpass_1.06-1_amd64.deb
+    - dpkg -i sshpass_1.06-1_amd64.deb
+    - wget http://security.debian.org/debian-security/pool/updates/main/o/openssh/ssh_7.4p1-10+deb9u4_all.deb
+    - dpkg -i ssh_7.4p1-10+deb9u4_all.deb
+    - mkdir ~/.ssh || echo 
+    - echo "|1|cpx7hiRM5+x4hy/7KP5lH0hZuBk=|5cWVOHEGlnVP5eRO90nRaEWD/ag= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFRPdkous+87vV03kfG/2dEbM/3vPr5bkUAX991z9dkYFy1i0kKB3B76OCf7BkcqmqapFNawDL5sPyZVui42GXM=" > ~/.ssh/known_hosts
+    - mkdir _tmp; cp /builds/eznote_dev/eznote/.m2/repository/top/liuliyong/eznote/0.0.1-SNAPSHOT/eznote-0.0.1-SNAPSHOT.war _tmp/$APP_NAME-test.war; cd _tmp
+    - mkdir $APP_NAME-test; mv $APP_NAME-test.war $APP_NAME-test; cd $APP_NAME-test
+    - jar -xvf $APP_NAME-test.war
+    - cp -r ../../src/conf ../../src/mapper WEB-INF/classes
+    - jar -cvf ../$APP_NAME-test.war .
+    - sshpass -p $SCP_PASS scp -r ../$APP_NAME-test.war $SCP_USER@$SCP_IP:$DEPLOY_PATH
+    
+  only:
+    - dev

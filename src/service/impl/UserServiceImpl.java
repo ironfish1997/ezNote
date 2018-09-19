@@ -1,6 +1,8 @@
 package service.impl;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -25,124 +27,140 @@ import util.ServerFileAccessUtil;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
-    public UserServiceImpl() {
+	public UserServiceImpl() {
 
-    }
+	}
 
-    @Resource
-    UserDao userDao;
+	private static final int[] EXPIRE_TIME_MILLIS = { 0, 86400000, 259200000, 604800000, 1296000000 };
 
-    @Value("#{db.salt}")
-    private String salt;
+	static SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-    @Override
-    public User Login(String email, String password) throws UserNotFoundException, PasswordException {
-        if (email == null || email.trim().isEmpty()) {
-            throw new UserNotFoundException("邮箱为空");
-        }
-        if (password == null || password.trim().isEmpty()) {
-            throw new PasswordException("密码为空");
-        }
-        password = DigestUtils.md5Hex(salt + password.trim());
-        User user=null;
-        try{
-        	user = userDao.findUserByEmail(email.trim());
-        }catch(RuntimeException e){
-        	e.printStackTrace();
-        	throw new UserNotFoundException("服务器错误");
-        }
-        if (user == null) {
-            throw new UserNotFoundException("此用户不存在");
-        } else if (!user.getPassword().equals(password.trim())) {
-            throw new PasswordException("密码错误");
-        }else if((user.getActived()!=1)){
-        	throw new UserNotFoundException("用户未激活,请检查您的邮箱是否接收到激活邮件");
-        }
-        return user;
-    }
+	@Resource
+	UserDao userDao;
 
-    @Override
-    public User Register(String email, String password, String nick, String confirm) throws UserNameException, PasswordException {
-        //检查name，不能和数据库中的重复
-        if (email == null || email.trim().isEmpty()) {
-            throw new UserNameException("邮箱不能为空");
-        }
-        User check = userDao.findUserByEmail(email);
-        if (check != null) {
-            throw new UserNameException("用户名已被注册");
-        }
-        //检查密码
-        if (password == null || password.trim().isEmpty()) {
-            throw new PasswordException("密码不能为空");
-        }
-        if (!password.equals(confirm)) {
-            throw new PasswordException("两次密码输入不一样");
-        }
-        //检查nick
-        if (nick == null || nick.trim().isEmpty()) {
-            nick = email;
-        }
+	@Value("#{db.salt}")
+	private String salt;
 
-        String id = UUID.randomUUID().toString();
-        String token = null;
-        String password2 = DigestUtils.md5Hex(salt + password.trim());
-        User user = new User(id, email, password2, token, nick,0,UUID.randomUUID().toString());
-        int n = userDao.addUser(user);
-        if (n != 1) {
-            throw new RuntimeException("添加失败");
-        }else{
-        	try {
+	@Override
+	public User Login(String email, String password, String expireTime)
+			throws UserNotFoundException, PasswordException {
+		if (email == null || email.trim().isEmpty()) {
+			throw new UserNotFoundException("邮箱为空");
+		}
+		if (password == null || password.trim().isEmpty()) {
+			throw new PasswordException("密码为空");
+		}
+		password = DigestUtils.md5Hex(salt + password.trim());
+		User user = null;
+		try {
+			user = userDao.findUserByEmail(email.trim());
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw new UserNotFoundException("服务器错误");
+		}
+		if (user == null) {
+			throw new UserNotFoundException("此用户不存在");
+		} else if (!user.getPassword().equals(password.trim())) {
+			throw new PasswordException("密码错误");
+		} else if ((user.getActived() != 1)) {
+			throw new UserNotFoundException("用户未激活,请检查您的邮箱是否接收到激活邮件");
+		}
+		if (expireTime != null) {
+			Date expireToSqlTime = new Date(System.currentTimeMillis()+EXPIRE_TIME_MILLIS[Integer.parseInt(expireTime)]);
+			user.setExpireTime(expireToSqlTime);
+		}
+		user.setToken(UUID.randomUUID().toString());
+		userDao.updateUser(user);
+		return user;
+	}
+
+	@Override
+	public User Register(String email, String password, String nick, String confirm)
+			throws UserNameException, PasswordException {
+		// 检查name，不能和数据库中的重复
+		if (email == null || email.trim().isEmpty()) {
+			throw new UserNameException("邮箱不能为空");
+		}
+		User check = userDao.findUserByEmail(email);
+		if (check != null) {
+			throw new UserNameException("用户名已被注册");
+		}
+		// 检查密码
+		if (password == null || password.trim().isEmpty()) {
+			throw new PasswordException("密码不能为空");
+		}
+		if (!password.equals(confirm)) {
+			throw new PasswordException("两次密码输入不一样");
+		}
+		// 检查nick
+		if (nick == null || nick.trim().isEmpty()) {
+			nick = email;
+		}
+
+		String id = UUID.randomUUID().toString();
+		String token = null;
+		String password2 = DigestUtils.md5Hex(salt + password.trim());
+		User user = new User(id, email, password2, token, nick, 0, UUID.randomUUID().toString(),new Date(System.currentTimeMillis()));
+		int n = userDao.addUser(user);
+		if (n != 1) {
+			throw new RuntimeException("添加失败");
+		} else {
+			try {
 				MailUtil.sendActiveMail(email, user.getActive_code());
 			} catch (InterruptedException | IOException | TimeoutException | ExecutionException e) {
 				e.printStackTrace();
 				throw new RuntimeException("激活邮件发送失败");
 			}
-        }
-        return user;
-    }
+		}
+		return user;
+	}
 
-    @Override
-    public boolean Update(String email,String nickName, String originPassword, String password, String confirm) throws UserNotFoundException, PasswordException {
-        //检查用户名，密码，确认密码是否格式正确
-        if (email == null || email.trim().isEmpty()) {
-            throw new UserNotFoundException("邮箱为空");
-        }
-        if(nickName==null||nickName.trim().isEmpty()){
-        	throw new UserNotFoundException("用户昵称为空");
-        }
-        if (password == null || password.trim().isEmpty()) {
-            throw new PasswordException("密码为空");
-        }
-        String passwordConf = confirm.trim();
-        if (confirm == null || !(passwordConf.equals(password.trim()))) {
-            throw new PasswordException("确认密码不一致");
-        }
-        User user = Login(email, originPassword);
-        //数据库里没有这个账号就报错
-        if (user == null) {
-            throw new UserNotFoundException("账号不存在");
-        }
-        String password2 = DigestUtils.md5Hex(salt + password.trim());
-        user.setPassword(password2);
-        user.setNick(nickName);
-        int n = userDao.updateUser(user);
-        return n == 1;
-    }
+	@Override
+	public boolean Update(String email, String nickName, String originPassword, String password, String confirm)
+			throws UserNotFoundException, PasswordException {
+		// 检查用户名，密码，确认密码是否格式正确
+		if (email == null || email.trim().isEmpty()) {
+			throw new UserNotFoundException("邮箱为空");
+		}
+		if (nickName == null || nickName.trim().isEmpty()) {
+			throw new UserNotFoundException("用户昵称为空");
+		}
+		if (password == null || password.trim().isEmpty()) {
+			throw new PasswordException("密码为空");
+		}
+		String passwordConf = confirm.trim();
+		if (confirm == null || !(passwordConf.equals(password.trim()))) {
+			throw new PasswordException("确认密码不一致");
+		}
+		User user = userDao.findUserByEmail(email);
+		// 数据库里没有这个账号就报错
+		if (user == null) {
+			throw new UserNotFoundException("账号不存在");
+		}
+		if(user.getPassword()!=originPassword){
+			throw new UserNotFoundException("原始密码错误");
+		}
+		String password2 = DigestUtils.md5Hex(salt + password.trim());
+		user.setPassword(password2);
+		user.setNick(nickName);
+		int n = userDao.updateUser(user);
+		return n == 1;
+	}
 
 	@Override
 	public boolean Existed(String email) throws UserNotFoundException, DataAccessException {
-		//检查用户名，密码，确认密码是否格式正确
-        if (email == null || email.trim().isEmpty()) 
-            throw new UserNotFoundException("邮箱为空");
-        
-        User user=null;
-        try{
-        	user = userDao.findUserByEmail(email.trim());
-        }catch(RuntimeException e){
-        	e.printStackTrace();
-        	throw new UserNotFoundException("服务器错误");
-        }
-        return user != null;
+		// 检查用户名，密码，确认密码是否格式正确
+		if (email == null || email.trim().isEmpty())
+			throw new UserNotFoundException("邮箱为空");
+
+		User user = null;
+		try {
+			user = userDao.findUserByEmail(email.trim());
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw new UserNotFoundException("服务器错误");
+		}
+		return user != null;
 	}
 
 	@Override
@@ -155,5 +173,19 @@ public class UserServiceImpl implements UserService {
 		ServerFileAccessUtil.uploadAvatar(user.getId(), avatar);
 		return ServerFileAccessUtil.isAvatarExisted(user.getId());
 	}
-	
+
+	@Override
+	public User checkToken(String token) {
+		// TODO Auto-generated method stub
+		User user = userDao.findUserByToken(token);
+		if(user==null){
+			throw new UserNotFoundException("该token对应用户未找到");
+		}
+		Date expireTime=user.getExpireTime();
+		if(System.currentTimeMillis()>=expireTime.getTime()){
+			throw new UserNotFoundException("token已过期");
+		}
+		return user;
+	}
+
 }

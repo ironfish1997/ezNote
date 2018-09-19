@@ -41,10 +41,24 @@
                                 <input type="password" id="log_pass" class="form-control form-control-sm">
                                 <label for="log_pass">密码</label>
                                 <div class="invalid-feedback" id="log_pass_err">密码错误</div>
-                                <p class="font-small blue-text d-flex justify-content-end" style="margin-top: 30px"><a href="#" class="blue-text ml-1"> 忘记密码？</a>(TODO)</p>
                             </div>
+                            <div class="md-form form-sm" style="margin-top: 30px;">
+                                <!--<i class="fa fa-lock prefix"></i>-->
+                                <select class="mdb-select md-form colorful-select dropdown-ins" id="log_expired_time">
+                                    <option value="0" selected>不自动登录</option>
+                                    <option value="1">1天内自动登录</option>
+                                    <option value="2">3天内自动登录</option>
+                                    <option value="3">7天内自动登录</option>
+                                    <option value="4">15天内自动登录</option>
+                                </select>
+                                <label for="log_expired_time">本次登录有效时长</label>
+                            </div>
+
+                            <p class="font-small blue-text d-flex justify-content-end" style="margin-top: 30px">
+                                <a href="#" class="blue-text ml-1" data-toggle="popover" data-placement="left" title="忘记密码" data-content="请联系管理员：admin@admin.com"> 忘记密码？</a></p>
+
                             <div class="text-center mt-4">
-                                <button class="btn waves-light blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light login-btn" id="log_btn">登录
+                                <button class="btn waves-light blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light login-btn" onclick="submitInputForm();">登录
                                     <i class="fa fa-sign-in ml-1"></i>
                                 </button>
                             </div>
@@ -94,7 +108,7 @@
                             </div>
 
                             <div class="text-center form-sm mt-4">
-                                <button class="btn waves-light blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light login-btn" id="reg_btn">注册
+                                <button class="btn waves-light blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light login-btn" onclick="submitRegForm();">注册
                                     <i class="fa fa-sign-in ml-1"></i>
                                 </button>
                             </div>

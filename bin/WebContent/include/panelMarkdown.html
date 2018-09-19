@@ -1,0 +1,57 @@
+<div id="panelMarkdown">
+    <div class="row">
+        <div class="col-sm-4">
+            <h3 class="yh_font">编辑Markdown笔记</h3>
+        </div>
+        <div class="col-sm-8" style="text-align: right">
+            <div class="btn-group" role="group">
+            	<button type="button" class="btn btn-primary waves-effect" onclick="showDeleteConfirmNote()">
+            		<i class="fa fa-share-alt"></i> 删除笔记</button>
+            	<button type="button" class="btn btn-info waves-effect" onclick="shareNote()">
+            		<i class="fa fa-share-alt"></i> 分享笔记</button>
+
+                <!-- TODO: Version Control -->
+                <div class="btn-group" role="group" style="display: none">
+                    <button id="btnCreateBackupMd" type="button" class="btn btn-info dropdown-toggle waves-effect" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="vertical-align: center;">
+                        <i class="fa fa-plus"></i> 创建新版本
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnCreateBackupMd">
+                        <a class="dropdown-item waves-effect" href="#">加载历史版本1</a>
+                        <a class="dropdown-item waves-effect" href="#">加载历史版本2</a>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-info waves-effect" onclick="updateNote('md');">
+                <i class="fa fa-save"></i> 保存笔记</button>
+            </div>
+        </div>
+    </div>
+</div>
+<aside class="side-right">
+    <div class="module" data-toggle="niceScroll">
+        <div class="chat-contact">
+            <div class="contact-body">
+                <!--- 笔记标题 --->
+                <div class="row">
+                    <div class="col-sm-4" style="margin: 25px 0 25px 0; ">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control text-right" id="inputMarkdownTitle" placeholder="Markdown笔记标题...">
+                            <div class="input-group-append">
+                                <span class="input-group-text">.md</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--- 笔记内容 --->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!--- 输入框 --->
+                        <div>
+                            <textarea id="mdEditor"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>

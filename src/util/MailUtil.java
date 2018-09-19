@@ -122,8 +122,7 @@ public class MailUtil {
 			// 这里添加图片的方式是将整个图片包含到邮件内容中, 实际上也可以以 http 链接的形式添加网络图片
 			text.setContent("<h2>易笔记账号激活邮件</h2><br/>" + "你好鸭！<br/>"
 					+ "&nbsp;&nbsp;请猛击<a href='http://120.79.79.151:8080/CloudNote/user/activeMail.do?email=" + toAddress
-					+ "&activecode=" + code + "'>http://120.79.79.151:8080/CloudNote/user/checkmail.do?email="
-					+ toAddress + "&activecode=" + code + "</a>完成验证。如果你没有注册过易笔记，请忽略这封邮件<br/>" + "谢谢鸭！",
+					+ "&activecode=" + code + "'>这里</a>完成验证。如果你没有注册过易笔记，请忽略这封邮件<br/>" + "谢谢鸭！",
 					"text/html;charset=UTF-8");
 
 			// 合成节点

@@ -1,9 +1,10 @@
 package entity;
 
-import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.Objects;
+
+import org.springframework.stereotype.Component;
 
 @Component("user")
 public class User implements Serializable {
@@ -15,8 +16,9 @@ public class User implements Serializable {
     private String nick = null;
     private Integer actived=-1;
     private String active_code=null;
+    private Date expireTime=null;
 
-    public User(String id, String email, String password, String token, String nick,Integer actived,String active_code) {
+    public User(String id, String email, String password, String token, String nick,Integer actived,String active_code,Date expireTime) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -24,6 +26,7 @@ public class User implements Serializable {
         this.nick = nick;
         this.actived=actived;
         this.active_code=active_code;
+        this.expireTime=expireTime;
     }
 
     @Override
@@ -102,5 +105,13 @@ public class User implements Serializable {
 
 	public void setActive_code(String active_code) {
 		this.active_code = active_code;
+	}
+
+	public Date getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(Date expireTime) {
+		this.expireTime = expireTime;
 	}
 }

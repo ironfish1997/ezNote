@@ -2,6 +2,7 @@ package service.impl;
 
 import org.apache.ibatis.executor.ExecutorException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.web.multipart.MultipartFile;
 
 import entity.User;
 import service.PasswordException;
@@ -12,9 +13,29 @@ import service.UserNotFoundException;
 public abstract class UserActiveAdapter implements UserActiveService {
 
 	@Override
-	public User Login(String name, String password)
+	public User Login(String email, String password, String expireTime)
 			throws UserNotFoundException, PasswordException, DataAccessException {
-		throw new ExecutorException("This method is not available");
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User checkToken(String token) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean Existed(String email) throws DataAccessException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean UpdateUserAvatar(String email, MultipartFile avatarUrl)
+			throws UserNotFoundException, PasswordException, DataAccessException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override

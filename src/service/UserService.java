@@ -17,9 +17,10 @@ public interface UserService {
      * @throws UserNotFoundException 用户不存在
      * @throws PasswordException 密码错误
      */
-    User Login(String email, String password) throws UserNotFoundException,PasswordException,DataAccessException;
+    User Login(String email, String password,String expireTime) throws UserNotFoundException,PasswordException,DataAccessException;
     User Register(String email,String password,String nick,String confirm) throws UserNameException,PasswordException,DataAccessException;
     boolean Existed(String email) throws DataAccessException;
     boolean Update(String email,String nickName, String originPassword,String password,String confirm) throws UserNotFoundException,PasswordException,DataAccessException;
     boolean UpdateUserAvatar(String email, MultipartFile avatarUrl) throws UserNotFoundException,PasswordException,DataAccessException;
+	User checkToken(String token);
 }

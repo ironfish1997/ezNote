@@ -10,11 +10,26 @@
           cn_user_token as token,
           cn_user_nick as nick,
           cn_user_actived as actived,
-          cn_user_active_code as active_code
+          cn_user_active_code as active_code,
+          cn_user_expire_time as expireTime
         from cn_user
         where cn_user_email=#{email}
     </select>
     
+    <select id="findUserByToken" parameterType="string" resultType="entity.User">
+	    select
+          cn_user_id as id,
+          cn_user_email as email,
+          cn_user_password as password,
+          cn_user_token as token,
+          cn_user_nick as nick,
+          cn_user_actived as actived,
+          cn_user_active_code as active_code,
+          cn_user_expire_time as expireTime
+        from cn_user
+        where cn_user_token=#{token}
+    </select>
+
     <insert id="addUser" parameterType="entity.User">
         insert into cn_user(
             cn_user_id,
@@ -23,7 +38,8 @@
             cn_user_token,
             cn_user_nick,
             cn_user_actived,
-            cn_user_active_code)
+            cn_user_active_code,
+            cn_user_expire_time)
         values(
             #{id},
             #{email},
@@ -31,7 +47,8 @@
             #{token},
             #{nick},
             #{actived},
-            #{active_code}
+            #{active_code},
+            #{expireTime}
         )
     </insert>
 
@@ -43,7 +60,8 @@
             cn_user_nick as nick,
             cn_user_token as token,
             cn_user_actived as actived,
-            cn_user_active_code as active_code
+            cn_user_active_code as active_code,
+            cn_user_expire_time as expireTime
         from
             cn_user
         where
@@ -67,6 +85,9 @@
 	        </if>
 	        <if test="user.active_code!=null">
 	            cn_user_active_code=#{user.active_code},
+	        </if>
+	        <if test="user.expireTime!=null">
+	            cn_user_expire_time=#{user.expireTime},
 	        </if>
         </trim>
         <where>cn_user_email=#{user.email}</where>

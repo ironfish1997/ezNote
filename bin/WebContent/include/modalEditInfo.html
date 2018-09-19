@@ -1,0 +1,76 @@
+<!--修改信息面板-->
+<div class="modal fade" id="modalEditInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog cascading-modal modal-avatar modal-sm" role="document">
+        <!--Content-->
+        <div class="modal-content">
+
+            <!--Header-->
+            <!--<a class="modal-header" data-toggle="modal" data-target="#modalEditAvatar">-->
+                <!--<img src="img/test.png" alt="avatar" class="rounded-circle img-responsive white avatar-border">-->
+            <!--</a>-->
+            <a class="modal-header">
+                <img src="img/test.png" alt="avatar" class="rounded-circle img-responsive white avatar-border">
+            </a>
+            <!--Body-->
+            <div class="modal-body mb-1">
+                <div class="text-center">
+                    <!--<h5 class="mt-1 mb-2 yh_font">昵称：管理员</h5>-->
+                    <div class="text-dark yh_font" id="update_alert_user_id"></div>
+                </div>
+
+                <div class="modal-body" id="editForm">
+                    <div class="md-form form-sm">
+                        <i class="fa fa-user prefix"></i>
+                        <input type="text" id="edit_nick" class="form-control form-control-sm" value="管理员">
+                        <label for="edit_nick">昵称</label>
+                        <div class="invalid-feedback" id="edit_nick_err">
+                            昵称错误
+                        </div>
+                    </div>
+
+                    <div class="md-form form-sm">
+                        <i class="fa fa-lock prefix"></i>
+                        <input type="password" id="edit_raw_pass" class="form-control form-control-sm">
+                        <label for="edit_raw_pass">原密码</label>
+                        <div class="invalid-feedback" id="edit_raw_pass_err">
+                            原密码错误
+                        </div>
+                    </div>
+
+                    <div class="md-form form-sm">
+                        <i class="fa fa-lock prefix"></i>
+                        <input type="password" id="edit_pass" class="form-control form-control-sm">
+                        <label for="edit_pass">新密码</label>
+                        <div class="invalid-feedback" id="edit_pass_err">
+                            密码错误
+                        </div>
+                    </div>
+
+                    <div class="md-form form-sm">
+                        <i class="fa fa-lock prefix"></i>
+                        <input type="password" id="edit_pass_con" class="form-control form-control-sm">
+                        <label for="edit_pass_con">确认新密码</label>
+                        <div class="invalid-feedback" id="edit_pass_con_err">
+                            确认密码错误
+                        </div>
+                    </div>
+
+                    <div class="text-center form-sm mt-4">
+                        <button class="btn waves-light blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light" id="edit_btn"
+                        	onclick="changepwd($('#edit_nick').val(),$('#edit_raw_pass').val(),$('#edit_pass').val(),$('#edit_pass_con').val(),getCookie('userName'))"
+                        >保存修改
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<script>
+let i=getCookie('userNick');
+$('#edit_nick').val(i);
+$('#update_alert_user_id').text(getCookie('userName'));
+</script>

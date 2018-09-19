@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import entity.User;
 import service.UserActiveService;
@@ -29,15 +30,26 @@ public class UserController extends AbstractController {
     @RequestMapping("/activeMail.do")
     @ResponseBody
     public Object activeMail(String email,String activecode){
-    	return new JsonResult(userActiveService.activeAccount(email, activecode));
+    	JsonResult jr=new JsonResult(userActiveService.activeAccount(email, activecode));
+    	if(jr.getState()==0){
+    		return new ModelAndView("activeSuccess");
+    	}else{
+    		return new ModelAndView("activeFailed");
+    	}
     }
 
     @RequestMapping("/login.do")
     @ResponseBody
-    public Object login(String email, String password) {
+    public Object login(String email, String password,String expireTime) {
         System.out.println("请求登录");
-        User user = userService.Login(email, password);
+        User user = userService.Login(email, password, expireTime);
         return new JsonResult(user);
+    }
+
+    @RequestMapping("/checkAutoLogin.do")
+    @ResponseBody
+    public Object checkAutoLogin(String token){
+    	return new JsonResult(userService.checkToken(token));
     }
 
     @RequestMapping("/register.do")

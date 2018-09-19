@@ -1,0 +1,158 @@
+.yh_font{
+    font-family: 微软雅黑, monospace;
+}
+.side-nav i, .navbar i, button i{
+    font-size: 1.1rem !important;
+}
+
+.modalBtnCenter{
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 20px;
+}
+
+.nav-link {
+    color: #00e5ff;
+}
+
+.login-btn {
+    width: 50%;
+    margin: 40px 0 30px 25% !important;
+}
+
+.notebookList {
+    padding: 0 10% 0 10%;
+}
+.notebookList .caret {
+    padding-right: 10%;
+}
+.notebookList .filtrable{
+    color: #424c56 !important;
+}
+.modal-body {
+    margin: 20px 0 20px 0 !important;
+    padding: 0 10% 0 10% !important;
+}
+
+/* side Nav styles */
+.side-nav .accordion .card {
+    background: transparent !important;
+    border: 0 !important;
+}
+
+.side-nav .accordion .card a {
+    color:  white !important;
+}
+
+.side-nav .accordion .card-header {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.side-nav .accordion .card-body {
+    padding: 0 0 0 10px !important;
+    background: transparent !important;
+}
+
+.side-nav .accordion .no-child {
+    position: relative !important;
+    /* left: 10px !important; */
+    background: transparent !important;
+}
+
+.side-nav .accordion .card-header a{
+    margin: 0 !important;
+    color: #fff;
+    font-weight: 300;
+    font-size: .8rem;
+    height: 36px;
+    line-height: 36px;
+    background: transparent !important;
+}
+
+.side-nav .accordion .card-header a:hover {
+    background :rgba(0,0,0,.15) !important;
+}
+
+/*.side-nav .btn_notebook i {*/
+    /*width: 1rem;*/
+    /*text-align: right;*/
+    /*margin-right: 3px;*/
+/*}*/
+
+.side-nav .dropdown-menu-right{
+    background: transparent;
+    border: none;
+}
+.side-nav .dropdown-menu-right a{
+    font-weight: 300;
+    font-size: 1rem;
+    height: 36px;
+    line-height: 36px;
+}
+.side-nav i{
+    width: 1rem;
+    text-align: right;
+    margin-right: 5px;
+}
+
+.avatar{
+    padding: 0 !important;
+}
+
+.avatar-border {
+    border: 5px outset mediumpurple !important;
+}
+
+.img_choose_btn {
+    width: 40%;
+    margin-left: 30%;
+}
+
+.list-group a{
+    background: rgba(200,230,255,.7 );
+}
+
+/* New note btn */
+#new_note_menu_for_css {
+    background: rgba(150, 180, 220, 0.9);
+    padding: 0.5rem 0;
+}
+#new_note_menu_for_css a{
+    color: white;
+}
+#new_note_menu_for_css a:hover{
+    color: darkgray;
+}
+#new_note_menu_for_css a:hover>*{
+    color: darkgray;
+}
+#btn_new_note_for_css:hover,#btn_new_notebook_for_css:hover {
+    background :rgba(0,0,0,.15);
+}
+#scrollableNav {
+    position: relative;
+}
+
+/* Context Menu */
+.context-menu-item {
+    background: transparent !important;
+}
+.context-menu-item:hover {
+    background: #2980b9 !important;
+}
+.context-menu-list {
+    background: rgba(200, 230, 245, 0.8) !important;
+}
+
+/* panel btns */
+#panelShowHtml .btn-group button {
+    margin: 0 5px 0 5px !important;
+}
+#panelMarkdown .btn-group button {
+    margin: 0 5px 0 5px !important;
+}
+#panelDownload .btn-group button {
+    margin: 0 5px 0 5px !important;
+}

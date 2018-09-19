@@ -1,0 +1,29 @@
+<!-- 新建Markdown文件面板 -->
+<div class="modal fade" id="modalNewMarkdown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- Change class .modal-sm to change the size of the modal -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100 yh_font">新建Markdown笔记</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mb-1">
+                <h5 class="mt-1 mb-2 yh_font">添加到笔记本：</h5>
+                <select class="mdb-select md-form colorful-select dropdown-primary notebookList" title="" id="newMarkdownNotebook">
+                </select>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control text-right" id="newMarkdownTitle" placeholder="Markdown文件名...">
+                    <div class="input-group-append">
+                        <span class="input-group-text">.md</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn waves-light blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light" id="btnNewMarkdown"
+                        style="margin: 20px 15% 20px 15%; width: 70%" onclick="addNewNote('md');">创建笔记<i class="fa fa-plus ml-3" aria-hidden="true"></i></button>
+            </div>
+        </div>
+    </div>
+</div>

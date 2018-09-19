@@ -1,0 +1,49 @@
+<div id="panelHtmlEditor">
+    <div class="row">
+        <div class="col-sm-8">
+            <h3 class="yh_font">编辑笔记</h3>
+        </div>
+        <div class="col-sm-4" style="text-align: right;">
+            <div class="btn-group" role="group">
+                <!-- TODO: Version Control -->
+                <div class="btn-group" role="group" style="display: none">
+                    <button id="btnCreateBackup" type="button" class="btn btn-info dropdown-toggle waves-effect" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="vertical-align: center;">
+                        <i class="fa fa-plus"></i> 创建新版本
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnCreateBackup">
+                        <a class="dropdown-item waves-effect" href="#">加载历史版本1</a>
+                        <a class="dropdown-item waves-effect" href="#">加载历史版本2</a>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-info waves-effect" onclick="updateNote('html');"
+                        id="btnSaveNote"><i class="fa fa-save"></i> 保存笔记</button>
+            </div>
+        </div>
+    </div>
+</div>
+<aside class="side-right">
+    <div class="module" data-toggle="niceScroll">
+        <div class="chat-contact">
+            <div class="contact-body">
+                <!--- 笔记标题 --->
+                <div class="row">
+                    <div class="col-sm-4" style="margin: 25px 0 25px 0; ">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control text-right" id="inputHtmlTitle" placeholder="笔记标题...">
+                            <div class="input-group-append">
+                                <span class="input-group-text">.html</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--- 笔记内容 --->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!--- 输入框 --->
+                        <div id="myEditor"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>

@@ -15,4 +15,6 @@ public interface UserDao {
     User findUserById(String userId) throws DataAccessException;
 
     int updateUser(@Param("user") User user) throws DataAccessException;
+
+	User findUserByToken(String token);
 }
